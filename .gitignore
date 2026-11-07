@@ -1,0 +1,7 @@
+.env
+/staticfiles/
+venv/
+media/
+backup/
+database.sqlite3
+datadump.json

@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load cloudinary %}
+{% load static %}
+{% block content %}
+  <main>
+    <section class="pt-36 pb-12 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-80 h-80 bg-accent/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="max-w-6xl mx-auto px-6 relative z-10">
+        <p class="reveal text-xs font-medium text-accent tracking-widest uppercase mb-3">Portfolio</p>
+        <h1 class="reveal font-display font-bold text-5xl md:text-6xl text-zinc-900 dark:text-white leading-tight mb-4">All Projects</h1>
+        <p class="reveal text-lg text-zinc-500 dark:text-zinc-400 max-w-xl leading-relaxed mb-8">A complete look at my work across UI/UX design, frontend development and landing pages.</p>
+
+        <div class="reveal flex flex-wrap gap-2">
+          <a href="{% url 'portfolio:projects' %}"
+             class="text-sm px-4 py-1.5 rounded-full border transition-colors {% if not active_category %}bg-accent text-white border-accent{% else %}bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:border-accent{% endif %}">All</a>
+          {% for cat in categories %}
+          <a href="{% url 'portfolio:projects' %}?category={{ cat|urlencode }}"
+             class="text-sm px-4 py-1.5 rounded-full border transition-colors {% if active_category == cat %}bg-accent text-white border-accent{% else %}bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700 hover:border-accent{% endif %}">{{ cat }}</a>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <section class="pb-24">
+      <div class="max-w-6xl mx-auto px-6">
+        {% if projects %}
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for project in projects %}
+          <article class="reveal project-card group h-full rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 hover:border-accent transition-colors">
+            <a href="{{ project.get_absolute_url }}" class="relative block photo-frame w-full h-52">
+              <img src="{% if project.image %}{{ project.image.url }}{% else %}https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80{% endif %}" alt="{{ project.title }}" loading="lazy"/>
+              {% if project.demo_video %}
+              <span class="absolute bottom-3 left-3 inline-flex items-center gap-1.5 bg-zinc-900/80 text-white text-xs font-medium px-2.5 py-1 rounded-full backdrop-blur">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                Demo video
+              </span>
+              {% endif %}
+            </a>
+            <div class="p-6">
+              <div class="flex flex-wrap gap-2 mb-3">
+                <span class="text-xs px-2.5 py-1 rounded-full bg-orange-50 dark:bg-zinc-800 text-accent border border-orange-200 dark:border-zinc-700">{{ project.category }}</span>
+                {% for tag in project.tags.all %}
+                <span class="text-xs px-2.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">{{ tag.name }}</span>
+                {% endfor %}
+              </div>
+              <a href="{{ project.get_absolute_url }}">
+                <h3 class="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">{{ project.title }}</h3>
+              </a>
+              <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">{{ project.summary|truncatewords:25 }}</p>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                  <a href="{{ project.get_absolute_url }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-900 dark:text-white nav-link">View project →</a>
+                  {% if project.live_url %}
+                  <a href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline">
+                    Live site
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                  </a>
+                  {% endif %}
+                </div>
+                {% if project.year %}<span class="text-xs text-zinc-400">{{ project.year }}</span>{% endif %}
+              </div>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-20">
+          <p class="text-zinc-400 text-sm">No projects in this category yet.</p>
+        </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="pb-24">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="bg-zinc-900 dark:bg-zinc-800 rounded-3xl p-10 md:p-14 text-center relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute bottom-0 left-0 w-40 h-40 bg-accent/10 rounded-full blur-2xl pointer-events-none"></div>
+          <div class="relative z-10">
+            <p class="text-xs font-medium text-accent tracking-widest uppercase mb-4">Ready to start?</p>
+            <h2 class="font-display font-bold text-3xl md:text-4xl text-white mb-4">Want your project here?</h2>
+            <p class="text-zinc-400 max-w-md mx-auto mb-8">I'm available for new projects. Tell me about what you're building and let's see if we're a good fit.</p>
+            <a href="{% url 'portfolio:home' %}#contact" class="inline-flex items-center gap-2 btn-primary bg-accent text-white font-medium px-8 py-3.5 rounded-full hover:bg-accent-light transition-colors">Start a project &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock %}

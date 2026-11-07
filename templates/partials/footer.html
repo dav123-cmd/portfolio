@@ -1,0 +1,33 @@
+<footer class="border-t border-zinc-100 dark:border-zinc-900">
+  <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+
+    <p class="text-sm text-zinc-400 text-center sm:text-left">
+      © <span id="yr">{% now "Y" %}</span> {{ profile.short_name }}. All rights reserved.
+      
+    </p>
+
+    <div class="flex flex-col items-center sm:items-end gap-2">
+      {% if profile.github_url or profile.linkedin_url or profile.twitter_url %}
+      <ul class="flex items-center gap-4 text-xs text-zinc-500" role="list">
+        {% if profile.github_url %}
+        <li><a href="{{ profile.github_url }}" rel="noopener noreferrer" target="_blank" class="hover:text-accent transition-colors">GitHub</a></li>
+        {% endif %}
+        {% if profile.linkedin_url %}
+        <li><a href="{{ profile.linkedin_url }}" rel="noopener noreferrer" target="_blank" class="hover:text-accent transition-colors">LinkedIn</a></li>
+        {% endif %}
+        {% if profile.twitter_url %}
+        <li><a href="{{ profile.twitter_url }}" rel="noopener noreferrer" target="_blank" class="hover:text-accent transition-colors">X / Twitter</a></li>
+        {% endif %}
+      </ul>
+      {% endif %}
+
+      <p class="text-xs text-zinc-500">Built with
+        <a href="https://tailwindcss.com" rel="noopener noreferrer" target="_blank" class="hover:text-accent transition-colors">Tailwind CSS</a>
+        &amp;
+       
+        <a href="https://www.djangoproject.com" rel="noopener noreferrer" target="_blank" class="hover:text-accent transition-colors">Django</a>
+      </p>
+    </div>
+
+  </div>
+</footer>

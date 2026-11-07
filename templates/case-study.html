@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+{% load cloudinary %}
+{% load static %}
+{% block content %}
+  <main>
+
+    <!-- ═══ CASE STUDY HEADER ═══ -->
+    <article>
+      <header class="pt-32 pb-10 max-w-4xl mx-auto px-6">
+
+        <a href="{% url 'portfolio:projects' %}" class="inline-flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors mb-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"/></svg>
+          Back to projects
+        </a>
+
+        <!-- Tags + date -->
+        <div class="flex flex-wrap items-center gap-3 mb-6">
+          <span class="text-xs bg-orange-50 dark:bg-zinc-800 text-accent border border-orange-200 dark:border-zinc-700 px-2.5 py-1 rounded-full">{{ project.category }}</span>
+          {% for tag in project.tags.all %}
+          <span class="text-xs bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-2.5 py-1 rounded-full">{{ tag.name }}</span>
+          {% endfor %}
+          {% if project.year or project.duration %}
+          <span class="text-xs text-zinc-400 ml-1">{{ project.year|default:"" }}{% if project.year and project.duration %} · {% endif %}{{ project.duration }}</span>
+          {% endif %}
+        </div>
+
+        <h1 class="reveal font-display font-bold text-4xl md:text-5xl lg:text-6xl text-zinc-900 dark:text-white leading-tight mb-6">{{ project.title }}</h1>
+
+        <p class="reveal d1 text-xl text-zinc-500 dark:text-zinc-400 leading-relaxed mb-8 max-w-2xl">{{ project.summary }}</p>
+
+        <!-- Live / code links -->
+        {% if project.live_url or project.repo_url %}
+        <div class="reveal d1 flex flex-wrap gap-3 mb-10">
+          {% if project.live_url %}
+          <a href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-accent text-white text-sm font-medium px-6 py-3 rounded-full hover:bg-accent-light transition-colors">
+            Visit live site
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          </a>
+          {% endif %}
+          {% if project.repo_url %}
+          <a href="{{ project.repo_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 text-sm font-medium px-6 py-3 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors">View code</a>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Meta row -->
+        {% if project.client or project.role or project.timeline or project.deliverables %}
+        <div class="reveal d2 grid grid-cols-2 md:grid-cols-4 gap-4 py-8 border-t border-b border-zinc-100 dark:border-zinc-900">
+          {% if project.client %}
+          <div>
+            <p class="text-xs text-zinc-400 uppercase tracking-widest mb-1">Client</p>
+            <p class="font-medium text-zinc-900 dark:text-white text-sm">{{ project.client }}</p>
+          </div>
+          {% endif %}
+          {% if project.role %}
+          <div>
+            <p class="text-xs text-zinc-400 uppercase tracking-widest mb-1">Role</p>
+            <p class="font-medium text-zinc-900 dark:text-white text-sm">{{ project.role }}</p>
+          </div>
+          {% endif %}
+          {% if project.timeline %}
+          <div>
+            <p class="text-xs text-zinc-400 uppercase tracking-widest mb-1">Timeline</p>
+            <p class="font-medium text-zinc-900 dark:text-white text-sm">{{ project.timeline }}</p>
+          </div>
+          {% endif %}
+          {% if project.deliverables %}
+          <div>
+            <p class="text-xs text-zinc-400 uppercase tracking-widest mb-1">Deliverables</p>
+            <p class="font-medium text-zinc-900 dark:text-white text-sm">{{ project.deliverables }}</p>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+      </header>
+
+      <!-- ═══ HERO: demo video, or image ═══ -->
+      <div class="max-w-6xl mx-auto px-6 mb-16">
+        <div class="reveal photo-frame w-full h-72 md:h-[480px] rounded-3xl overflow-hidden bg-zinc-900">
+          {% if project.demo_video %}
+          <video class="w-full h-full object-contain" controls preload="metadata" playsinline
+                 {% if project.image %}poster="{{ project.image.url }}"{% endif %}>
+            <source src="{{ project.demo_video.url }}">
+            Your browser does not support the video tag.
+          </video>
+          {% else %}
+          <img src="{% if project.image %}{{ project.image.url }}{% else %}https://images.unsplash.com/photo-1551650975-87deedd944c3?w=1400&q=80{% endif %}" alt="{{ project.title }}" loading="eager"/>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- ═══ RESULTS BANNER ═══ -->
+      {% if project.stats.all %}
+      <div class="max-w-4xl mx-auto px-6 mb-16">
+        <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-4">
+          {% for stat in project.stats.all %}
+          <div class="stat-card bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-5 pl-6">
+            <p class="font-display font-bold text-3xl {% if stat.is_highlighted %}text-accent{% else %}text-zinc-900 dark:text-white{% endif %}">{{ stat.value }}</p>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1 leading-snug">{{ stat.label }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- ═══ SECTIONS ═══ -->
+      {% for section in project.sections.all %}
+
+        {% if section.kind == 'text' %}
+        <div class="max-w-3xl mx-auto px-6 pb-4 prose-cs">
+          {% if section.title %}<h2>{{ section.title }}</h2>{% endif %}
+          {{ section.body|safe }}
+        </div>
+
+        {% elif section.kind == 'principles' %}
+        <div class="max-w-3xl mx-auto px-6 pb-4 prose-cs">
+          {% if section.title %}<h2>{{ section.title }}</h2>{% endif %}
+          {{ section.body|safe }}
+        </div>
+        <div class="max-w-5xl mx-auto px-6 mb-12">
+          <div class="reveal grid md:grid-cols-3 gap-5">
+            {% for item in section.items.all %}
+            <div class="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-7 border border-zinc-100 dark:border-zinc-800">
+              {% if item.icon_svg %}
+              <div class="w-10 h-10 bg-orange-50 dark:bg-zinc-800 rounded-xl flex items-center justify-center mb-4">
+                <svg class="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">{{ item.icon_svg|safe }}</svg>
+              </div>
+              {% endif %}
+              <h3 class="font-display font-bold text-zinc-900 dark:text-white mb-2" style="font-size:1rem;margin:0 0 .5rem;color:inherit;">{{ item.title }}</h3>
+              <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed" style="margin:0;color:inherit;">{{ item.description }}</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        {% elif section.kind == 'steps' %}
+        <div class="max-w-3xl mx-auto px-6 pb-4 prose-cs">
+          {% if section.title %}<h2>{{ section.title }}</h2>{% endif %}
+          {{ section.body|safe }}
+        </div>
+        <div class="max-w-4xl mx-auto px-6 mb-12">
+          <div class="reveal space-y-4">
+            {% for item in section.items.all %}
+            <div class="flex gap-5 bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-6 border border-zinc-100 dark:border-zinc-800">
+              <div class="step-badge shrink-0 mt-0.5">{{ forloop.counter }}</div>
+              <div>
+                <p class="font-display font-bold text-zinc-900 dark:text-white mb-1">{{ item.title }}</p>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">{{ item.description }}</p>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        {% elif section.kind == 'image' and section.image %}
+        <div class="max-w-5xl mx-auto px-6 mb-4">
+          <div class="reveal photo-frame w-full h-56 md:h-80 rounded-2xl">
+            <img src="{{ section.image.url }}" alt="{{ section.caption|default:project.title }}" loading="lazy"/>
+          </div>
+          {% if section.caption %}<p class="img-caption">{{ section.caption }}</p>{% endif %}
+        </div>
+
+        {% elif section.kind == 'compare' and section.image and section.image_after %}
+        <div class="max-w-5xl mx-auto px-6 mb-12">
+          <div class="reveal grid md:grid-cols-2 gap-4">
+            <div>
+              <div class="photo-frame w-full h-52 rounded-2xl">
+                <img src="{{ section.image.url }}" alt="Before" loading="lazy"/>
+              </div>
+              {% if section.caption %}<p class="img-caption mt-2">{{ section.caption }}</p>{% endif %}
+            </div>
+            <div>
+              <div class="photo-frame w-full h-52 rounded-2xl">
+                <img src="{{ section.image_after.url }}" alt="After" loading="lazy"/>
+              </div>
+              {% if section.caption_after %}<p class="img-caption mt-2">{{ section.caption_after }}</p>{% endif %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+      {% endfor %}
+
+      <div class="pb-12"></div>
+    </article>
+
+    <!-- ═══ MORE PROJECTS ═══ -->
+    {% if related_projects %}
+    <section class="bg-zinc-50 dark:bg-zinc-900/50 py-16">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="font-display font-bold text-2xl text-zinc-900 dark:text-white">More projects</h2>
+          <a href="{% url 'portfolio:projects' %}" class="text-sm font-medium text-accent nav-link hidden md:block">View all →</a>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6">
+          {% for related in related_projects %}
+          <article class="reveal card-h group bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 hover:border-accent transition-colors">
+            <div class="photo-frame w-full h-44">
+              <img src="{% if related.image %}{{ related.image.url }}{% else %}https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=700&q=80{% endif %}" alt="{{ related.title }}" loading="lazy"/>
+            </div>
+            <div class="p-5">
+              <div class="flex gap-2 mb-2">
+                <span class="text-xs bg-orange-50 dark:bg-zinc-800 text-accent border border-orange-200 dark:border-zinc-700 px-2.5 py-1 rounded-full">{{ related.category }}</span>
+              </div>
+              <a href="{{ related.get_absolute_url }}">
+                <h3 class="font-display font-bold text-base text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">{{ related.title }}</h3>
+              </a>
+              <a href="{{ related.get_absolute_url }}" class="text-sm font-medium text-accent nav-link">View project →</a>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        <div class="text-center mt-8 md:hidden">
+          <a href="{% url 'portfolio:projects' %}" class="text-sm font-medium text-accent">View all projects →</a>
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- ═══ CTA ═══ -->
+    <section class="py-24">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="bg-zinc-900 dark:bg-zinc-800 rounded-3xl p-10 md:p-14 text-center relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+          <div class="absolute bottom-0 left-0 w-40 h-40 bg-accent/10 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+          <div class="relative z-10">
+            <p class="text-xs font-medium text-accent tracking-widest uppercase mb-4">Ready to start?</p>
+            <h2 class="font-display font-bold text-3xl md:text-4xl text-white mb-4">Got a similar project?</h2>
+            <p class="text-zinc-400 max-w-md mx-auto mb-8">I'm available for new projects. Tell me about what you're building and let's see if we're a good fit.</p>
+            <a href="{% url 'portfolio:home' %}#contact" class="inline-flex items-center gap-2 btn-primary bg-accent text-white font-medium px-8 py-3.5 rounded-full hover:bg-accent-light transition-colors">Start a project →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+{% endblock %}

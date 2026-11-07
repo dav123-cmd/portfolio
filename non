@@ -1,0 +1,5 @@
+python manage.py dumpdata --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 4 > datadump.json
+pip install cloudinary-cli
+env('CLOUDINARY_URL')
+cld sync --push media portfolio_media
+

@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% load cloudinary %}
+{% load static %}
+{% block content %}
+<main>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero" class="relative min-h-screen flex items-center pt-16 overflow-hidden">
+  <div class="absolute top-1/4 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+  <div class="absolute bottom-1/4 left-0 w-64 h-64 bg-zinc-200/50 dark:bg-zinc-800/30 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+  <div class="relative z-10 max-w-6xl mx-auto px-6 py-24 w-full">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+
+      <div>
+        {% if profile.is_available %}
+        <p class="reveal text-sm font-medium text-accent tracking-widest uppercase mb-4">{{ profile.availability_text }}</p>
+        {% endif %}
+        <h1 class="reveal d1 font-display font-bold text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-zinc-900 dark:text-white mb-6">
+          Hi, I'm <span class="text-accent">{{ profile.short_name }}</span>
+        </h1>
+        <p class="reveal d2 text-lg md:text-xl text-zinc-500 dark:text-zinc-400 font-light leading-relaxed max-w-md mb-10">
+          Freelance <strong class="font-medium text-zinc-700 dark:text-zinc-300">{{ profile.role }}</strong>. {{ profile.tagline }}
+        </p>
+        <div class="reveal d3 flex flex-wrap gap-4">
+          <a href="#work" class="shimmer inline-flex items-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-medium px-7 py-3.5 rounded-full hover:bg-zinc-700 dark:hover:bg-zinc-200 transition-colors text-sm">
+            View my work
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </a>
+          <a href="#contact" class="inline-flex items-center gap-2 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 font-medium px-7 py-3.5 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors text-sm">Get in touch</a>
+        </div>
+        <div class="reveal d4 flex gap-8 mt-14 pt-8 border-t border-zinc-100 dark:border-zinc-900">
+          <div><p class="font-display font-bold text-3xl text-zinc-900 dark:text-white">{{ profile.projects_done }}+</p><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Projects done</p></div>
+          <div><p class="font-display font-bold text-3xl text-zinc-900 dark:text-white">{{ profile.happy_clients }}+</p><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Happy clients</p></div>
+          <div><p class="font-display font-bold text-3xl text-zinc-900 dark:text-white">{{ profile.years_experience }}y</p><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Experience</p></div>
+        </div>
+      </div>
+
+      <div class="reveal d2 flex justify-center md:justify-end">
+        <div class="relative w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96">
+          <div class="pf w-full h-full rounded-3xl">
+            <img src="{% if profile.hero_image %}{{ profile.hero_image.url }}{% else %}https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80{% endif %}" alt="{{ profile.full_name }} — {{ profile.role }}" loading="eager">
+          </div>
+          {% if profile.badge_text %}
+          <div class="absolute -bottom-4 -left-4 bg-accent text-white font-display font-bold text-sm px-4 py-2.5 rounded-2xl shadow-lg">{{ profile.badge_text }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SERVICES ═══ -->
+{% if services %}
+<section id="services" class="py-24 bg-zinc-50 dark:bg-zinc-900/40">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="mb-14">
+      <p class="reveal text-xs font-medium text-accent tracking-widest uppercase mb-3">What I do</p>
+      <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white">Services</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      {% for service in services %}
+      {% if service.is_highlighted %}
+      <article class="reveal d{{ forloop.counter }} card-h group bg-zinc-900 dark:bg-zinc-800 rounded-2xl p-8 border border-zinc-800 hover:border-accent">
+        <div class="w-12 h-12 flex items-center justify-center bg-zinc-800 dark:bg-zinc-700 rounded-xl mb-6 group-hover:bg-accent/20 transition-colors">
+          <svg class="w-6 h-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">{{ service.icon_svg|safe }}</svg>
+        </div>
+        <h3 class="font-display font-bold text-xl text-white mb-3">{{ service.title }}</h3>
+        <p class="text-sm text-zinc-400 leading-relaxed">{{ service.description }}</p>
+      </article>
+      {% else %}
+      <article class="reveal d{{ forloop.counter }} card-h group bg-white dark:bg-zinc-900 rounded-2xl p-8 border border-zinc-100 dark:border-zinc-800 hover:border-accent">
+        <div class="w-12 h-12 flex items-center justify-center bg-orange-50 dark:bg-zinc-800 rounded-xl mb-6 group-hover:bg-accent/10 transition-colors">
+          <svg class="w-6 h-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">{{ service.icon_svg|safe }}</svg>
+        </div>
+        <h3 class="font-display font-bold text-xl text-zinc-900 dark:text-white mb-3">{{ service.title }}</h3>
+        <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">{{ service.description }}</p>
+      </article>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══ WORK ═══ -->
+{% if featured_project %}
+<section id="work" class="py-24">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14">
+      <div>
+        <p class="reveal text-xs font-medium text-accent tracking-widest uppercase mb-3">Portfolio</p>
+        <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white">Selected work</h2>
+      </div>
+      <a href="{% url 'portfolio:projects' %}" class="reveal d1 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors self-start sm:self-auto nl">All projects →</a>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+
+      {# Featured (large) project #}
+      <article class="card-h reveal d1 group rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 hover:border-accent md:row-span-2">
+        <div class="pf w-full h-64 md:h-80">
+          <img src="{% if featured_project.image %}{{ featured_project.image.url }}{% else %}https://images.unsplash.com/photo-1551650975-87deedd944c3?w=900&q=80{% endif %}" alt="{{ featured_project.title }}" loading="lazy">
+        </div>
+        <div class="p-7">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs bg-orange-50 dark:bg-zinc-800 text-accent border border-orange-200 dark:border-zinc-700 px-3 py-1 rounded-full">{{ featured_project.category }}</span>
+            {% for tag in featured_project.tags.all %}
+            <span class="text-xs bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">{{ tag.name }}</span>
+            {% endfor %}
+          </div>
+          <a href="{{ featured_project.get_absolute_url }}">
+            <h3 class="font-display font-bold text-2xl text-zinc-900 dark:text-white mb-2">{{ featured_project.title }}</h3>
+          </a>
+          <div class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-5">{{ featured_project.summary|linebreaks }}</div>
+          <a href="{{ featured_project.get_absolute_url }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-900 dark:text-white nl">View case study <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+        </div>
+      </article>
+
+      {# Smaller projects #}
+      {% for project in other_projects %}
+      <article class="card-h reveal d{{ forloop.counter|add:1 }} group rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 hover:border-accent">
+        <div class="pf w-full h-48">
+          <img src="{% if project.image %}{{ project.image.url }}{% else %}https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80{% endif %}" alt="{{ project.title }}" loading="lazy">
+        </div>
+        <div class="p-6">
+          <div class="flex flex-wrap gap-2 mb-3">
+            <span class="text-xs bg-orange-50 dark:bg-zinc-800 text-accent border border-orange-200 dark:border-zinc-700 px-3 py-1 rounded-full">{{ project.category }}</span>
+            {% for tag in project.tags.all|slice:":1" %}
+            <span class="text-xs bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 px-3 py-1 rounded-full">{{ tag.name }}</span>
+            {% endfor %}
+          </div>
+          <a href="{{ project.get_absolute_url }}">
+            <h3 class="font-display font-bold text-xl text-zinc-900 dark:text-white mb-1.5">{{ project.title }}</h3>
+          </a>
+          <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">{{ project.summary|truncatewords:25 }}</p>
+          <a href="{{ project.get_absolute_url }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-900 dark:text-white nl">View case study →</a>
+        </div>
+      </article>
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about" class="py-24 bg-zinc-50 dark:bg-zinc-900/40">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+
+      <div class="reveal order-2 md:order-1">
+        <div class="pf w-full aspect-square max-w-sm mx-auto rounded-3xl">
+          <img src="{% if profile.about_image %}{{ profile.about_image.url }}{% else %}https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=700&q=80{% endif %}" alt="{{ profile.full_name }}" loading="lazy">
+        </div>
+      </div>
+
+      <div class="order-1 md:order-2">
+        <p class="reveal text-xs font-medium text-accent tracking-widest uppercase mb-3">About me</p>
+        <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white leading-tight mb-6">{{ profile.about_heading }}</h2>
+        <p class="reveal d2 text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">{{ profile.about_paragraph_1 }}</p>
+        {% if profile.about_paragraph_2 %}
+        <p class="reveal d3 text-zinc-500 dark:text-zinc-400 leading-relaxed mb-8">{{ profile.about_paragraph_2 }}</p>
+        {% endif %}
+        {% if skills %}
+        <div class="reveal d4">
+          <p class="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-3">Stack &amp; tools</p>
+          <div class="flex flex-wrap gap-2" role="list" aria-label="Skills">
+            {% for skill in skills %}
+            <span role="listitem" class="stag text-sm bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-3.5 py-1.5 rounded-full hover:border-accent">{{ skill.name }}</span>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ═══ -->
+{% if testimonials %}
+<section id="reviews" class="py-24">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="mb-14">
+      <p class="reveal text-xs font-medium text-accent tracking-widest uppercase mb-3">Social proof</p>
+      <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white">What clients say</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      {% for t in testimonials %}
+      <blockquote class="reveal d{{ forloop.counter }} rounded-2xl p-7 border {% if t.is_highlighted %}bg-zinc-900 dark:bg-zinc-800 border-zinc-800{% else %}bg-zinc-50 dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800{% endif %}">
+        <div class="flex gap-0.5 mb-5" aria-label="{{ t.rating }} stars">
+          {% for i in t.stars %}
+          <svg class="w-4 h-4 text-accent fill-current" viewBox="0 0 20 20" aria-hidden="true"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          {% endfor %}
+        </div>
+        <p class="{% if t.is_highlighted %}text-zinc-400{% else %}text-zinc-600 dark:text-zinc-400{% endif %} text-sm leading-relaxed mb-6 italic">"{{ t.quote }}"</p>
+        <footer class="flex items-center gap-3">
+          <div class="pf w-10 h-10 rounded-full shrink-0">
+            <img src="{% if t.avatar %}{{ t.avatar.url }}{% else %}https://i.pravatar.cc/80?u={{ t.pk }}{% endif %}" alt="{{ t.author_name }}" loading="lazy">
+          </div>
+          <div>
+            <p class="font-medium text-sm {% if t.is_highlighted %}text-white{% else %}text-zinc-900 dark:text-white{% endif %}">{{ t.author_name }}</p>
+            <p class="text-xs text-zinc-500">{{ t.author_role }}</p>
+          </div>
+        </footer>
+      </blockquote>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══ BLOG ═══ -->
+{% if latest_posts %}
+<section id="blog" class="py-24 bg-zinc-50 dark:bg-zinc-900/40">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14">
+      <div>
+        <p class="reveal text-xs font-medium text-accent tracking-widest uppercase mb-3">Thoughts</p>
+        <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white">From the blog</h2>
+      </div>
+      <a href="{% url 'portfolio:blog' %}" class="reveal d1 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-accent transition-colors self-start sm:self-auto nl">All articles →</a>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      {% for post in latest_posts %}
+      <article class="reveal d{{ forloop.counter }} card-h group bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 hover:border-accent">
+        <div class="pf w-full h-44">
+          <img src="{% if post.cover_image %}{{ post.cover_image.url }}{% else %}https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=700&q=80{% endif %}" alt="{{ post.title }}" loading="lazy">
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-3 mb-3">
+            {% if post.category %}
+            <span class="text-xs bg-orange-50 dark:bg-zinc-800 text-accent border border-orange-200 dark:border-zinc-700 px-2.5 py-1 rounded-full">{{ post.category.name }}</span>
+            {% endif %}
+            <span class="text-xs text-zinc-400">{{ post.published_at|date:"M j, Y" }}</span>
+          </div>
+          <a href="{{ post.get_absolute_url }}">
+            <h3 class="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2 group-hover:text-accent transition-colors">{{ post.title }}</h3>
+          </a>
+          <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">{{ post.excerpt }}</p>
+          <a href="{{ post.get_absolute_url }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-900 dark:text-white nl">Read more →</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% include 'partials/contact.html' %}
+</main>
+{% endblock %}

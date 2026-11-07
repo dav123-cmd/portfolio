@@ -1,0 +1,18 @@
+1.python manage.py dumpdata --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 4 > datadump.json
+
+2.on other project
+# settings.py
+DATABASES = {
+    'DEFAULT': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'MotorHub',
+        'USER': 'postgres',
+        'PASSWORD': '1234',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
+python manage.py migrate
+python manage.py loaddata datadump.json
+python manage.py sqlsequencereset core auth | python manage.py dbshell
