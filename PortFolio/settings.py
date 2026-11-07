@@ -193,3 +193,18 @@ else:
             "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
         },
     }
+
+if not DEBUG:
+    # Allow Django to accept the live web service url domain
+    ALLOWED_HOSTS = ['://onrender.com', 'localhost', '127.0.0.1']
+
+    # Trust Render's incoming proxy headers to pass validation checks safely
+    CSRF_TRUSTED_ORIGINS = ['https://://onrender.com']
+    
+    # Crucial for apps behind proxies (like Render) to identify secure HTTPS streams
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    
+    # Production security headers
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
