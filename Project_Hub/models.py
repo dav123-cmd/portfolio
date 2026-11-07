@@ -9,7 +9,6 @@ from django.core.validators import FileExtensionValidator
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-
 # Import the CloudinaryImage and CloudinaryVideo methods for the simplified syntax used in this guide
 from cloudinary import CloudinaryImage
 from cloudinary import CloudinaryVideo
@@ -23,17 +22,14 @@ class SiteProfile(models.Model):
     availability_text = models.CharField(max_length=60, default="Available for work")
     badge_text = models.CharField(max_length=60, default="Open to projects")
     is_available = models.BooleanField(default=True)
-
     hero_image = models.ImageField(upload_to="profile/", blank=True)
     about_image = models.ImageField(upload_to="profile/", blank=True)
     about_heading = models.CharField(max_length=120, default="A bit about who I am")
     about_paragraph_1 = models.TextField()
     about_paragraph_2 = models.TextField(blank=True)
-
     projects_done = models.PositiveIntegerField(default=0)
     happy_clients = models.PositiveIntegerField(default=0)
     years_experience = models.PositiveIntegerField(default=0)
-
     email = models.EmailField(blank=True)
     phone = models.CharField(max_length=30, blank=True)
     location = models.CharField(max_length=100, blank=True)
@@ -59,7 +55,6 @@ class SiteProfile(models.Model):
         )
         return obj
 
-
 class Service(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
@@ -77,7 +72,6 @@ class Service(models.Model):
     def __str__(self):
         return self.title
 
-
 class Skill(models.Model):
     name = models.CharField(max_length=50)
     order = models.PositiveSmallIntegerField(default=0)
@@ -87,7 +81,6 @@ class Skill(models.Model):
 
     def __str__(self):
         return self.name
-
 
 class Tag(models.Model):
     name = models.CharField(max_length=40, unique=True)
@@ -103,7 +96,6 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
-
 
 class Project(models.Model):
     title = models.CharField(max_length=150)
@@ -132,8 +124,6 @@ class Project(models.Model):
     class Meta:
         ordering = ["order", "-created_at"]
 
-    
-
     def get_related(self, limit=3):
         """Same-category projects first, then the latest others."""
         qs = (Project.objects.filter(is_published=True)
@@ -143,8 +133,6 @@ class Project(models.Model):
             ids = [p.pk for p in related]
             related += list(qs.exclude(pk__in=ids)[: limit - len(related)])
         return related
-
-
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -156,7 +144,6 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
-
 
 class ProjectStat(models.Model):
     """Results banner: big number + label."""
@@ -171,7 +158,6 @@ class ProjectStat(models.Model):
 
     def __str__(self):
         return f"{self.value} {self.label}"
-
 
 class ProjectSection(models.Model):
     TEXT = "text"
@@ -204,7 +190,6 @@ class ProjectSection(models.Model):
     def __str__(self):
         return f"{self.project.title} · {self.get_kind_display()} · {self.title or self.pk}"
 
-
 class SectionItem(models.Model):
     """Cards (principles) or steps inside a section."""
     section = models.ForeignKey(ProjectSection, on_delete=models.CASCADE, related_name="items")
@@ -219,14 +204,9 @@ class SectionItem(models.Model):
     def __str__(self):
         return self.title
 
-
-
-
-
 def validate_video_size(f):
     if f.size > 100 * 1024 * 1024:
         raise ValidationError("Video must be 100 MB or smaller.")
-
 
 class Testimonial(models.Model):
     quote = models.TextField()
@@ -265,7 +245,6 @@ class BlogCategory(models.Model):
     def __str__(self):
         return self.name
 
-
 class BlogPost(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=210, unique=True, blank=True)
@@ -287,7 +266,6 @@ class BlogPost(models.Model):
     def get_absolute_url(self):
         return reverse("portfolio:blog_detail", kwargs={"slug": self.slug})
 
-
     @property
     def reading_time(self):
         words = len(strip_tags(self.content).split())
@@ -303,8 +281,6 @@ class BlogPost(models.Model):
             related += list(qs.exclude(pk__in=ids)[: limit - len(related)])
         return related
 
-
-    
     def __str__(self):
         return self.title
 
