@@ -4,13 +4,14 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.template.backends import django
 from django.urls import reverse
 from django.views.decorators.http import require_POST
+from requests import request
 
 from .models import (
     BlogCategory, BlogPost, ContactMessage, Project, Service, Skill, Testimonial,
 )
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.mail import send_mail
+from django.core.mail import message, send_mail
 from django.core.validators import validate_email
 import cloudinary
 import cloudinary.uploader
@@ -116,12 +117,13 @@ def blog_detail(request, slug):
     return render(request, "blog-article.html", context)
 
 
-
+CONTACT_URL = lambda: f"{reverse('portfolio:home')}#contact"
 @require_POST
+
 def contact_submit(request):
     # Honeypot: real visitors never see or fill this field. Bots do.
     if request.POST.get("website"):
-        return redirect(f"{reverse('portfolio:home')}#contact")
+        return redirect(CONTACT_URL())
 
     name = request.POST.get("name", "").strip()[:100]
     email = request.POST.get("email", "").strip()
@@ -135,7 +137,7 @@ def contact_submit(request):
 
     if not (name and email and message):
         messages.error(request, "Please fill in your name, a valid email and a message.")
-        return redirect(f"{reverse('portfolio:home')}#contact")
+        return redirect(CONTACT_URL())
 
     ContactMessage.objects.create(name=name, email=email, subject=subject, message=message)
 
@@ -151,4 +153,6 @@ def contact_submit(request):
         )
 
     messages.success(request, "Thanks! I'll get back to you soon.")
-    return redirect(f"{reverse('index')}#contact")
+    return redirect(CONTACT_URL())
+
+

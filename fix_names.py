@@ -27,7 +27,7 @@ MAP = {
     "projects/videos/portfolio": "media/projects/videos/portfolio_efnp6n",
 }
 
-DRY_RUN = True   # set to False to actually save
+DRY_RUN = False  # set to False to actually save
 
 for model in apps.get_models():
     for field in model._meta.get_fields():
