@@ -1,9 +1,7 @@
-
 import os
 import django
 
-# Initialize Django
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Portfolio.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "PortFolio.settings")
 django.setup()
 
 from Project_Hub.models import SiteProfile
@@ -21,8 +19,9 @@ if profile:
 
     profile.save()
 
-    print("SUCCESS: Images updated!")
+    print("SUCCESS! Images updated.")
     print("Hero:", profile.hero_image)
     print("About:", profile.about_image)
+
 else:
     print("No SiteProfile record found.")
