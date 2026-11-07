@@ -20,7 +20,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 # Automatically toggle DEBUG off if running on Render production
 if 'RENDER' in os.environ:
-    DEBUG = True
+    DEBUG = False
 else:
     DEBUG = True
 
