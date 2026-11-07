@@ -130,8 +130,8 @@ DEFAULT_FROM_EMAIL = "portfolio@localhost"
 # Cloudinary Integration API configurations
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': env('CLOUD_NAME', default=''),
-    'API_KEY': env('CLOUD_API_KEY', default=''),
-    'API_SECRET': env('CLOUD_API_SECRET', default=''),
+    'API_KEY': env('API_KEY', default=''),
+    'API_SECRET': env('API_SECRET', default=''),
 }
 
 
