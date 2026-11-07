@@ -138,13 +138,13 @@ MAILERS = {
 }
 DEFAULT_FROM_EMAIL = "portfolio@localhost"
 
-import cloudinary
+#import cloudinary
 
-cloudinary.os.getenv( 
-  cloud_name = env("CLOUD_NAME"),
-  api_key = env("API_KEY"),
-  api_secret = env("API_SECRET")
-)
+#cloudinary.os.getenv( 
+  #cloud_name = env("CLOUD_NAME"),
+  #api_key = env("API_KEY"),
+ # api_secret = env("API_SECRET")
+#)
 
 env("CLOUDINARY_URL")
 
