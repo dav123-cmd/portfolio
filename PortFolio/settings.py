@@ -137,6 +137,41 @@ CLOUDINARY_STORAGE = {
 
 # Route asset engines dynamically depending on the Environment
 if not DEBUG:
+    # New Django 6+ unified layout for Cloudinary and WhiteNoise serving
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+
+    # Production Secure Headers and Trusted Routing Gateways
+    CSRF_TRUSTED_ORIGINS = ['https://onrender.com']
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+else:
+    # Local Development Fallbacks
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+
+
+
+
+
+
+"""
+# Route asset engines dynamically depending on the Environment
+if not DEBUG:
     # Use Cloudinary for user media uploads
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
     
@@ -166,3 +201,4 @@ else:
             "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
         },
     }
+"""
