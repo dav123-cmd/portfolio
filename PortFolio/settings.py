@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 from pathlib import Path
 import os 
 import environ 
-
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -130,9 +130,7 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 
-# Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
-
+# Email Settings
 MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
@@ -140,38 +138,58 @@ MAILERS = {
 }
 DEFAULT_FROM_EMAIL = "portfolio@localhost"
 
-#import cloudinary
 
-#cloudinary.os.getenv( 
-  #cloud_name = env("CLOUD_NAME"),
-  #api_key = env("API_KEY"),
- # api_secret = env("API_SECRET")
-#)
+# ═════════════════════════════════════════════════════════════════════
+# PRODUCTION & ENVIRONMENT CONFIGURATIONS
+# ═════════════════════════════════════════════════════════════════════
 
-env("CLOUDINARY_URL")
+# Automatically toggle DEBUG off if running on Render production
+if 'RENDER' in os.environ:
+    DEBUG = False
+else:
+    DEBUG = True
 
-
+# Cloudinary Integration
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUD_NAME'),
-    'API_KEY': os.environ.get('API_KEY'),
-    'API_SECRET': os.environ.get('API_SECRET'),
+    'CLOUD_NAME': env('CLOUD_NAME', default=''),
+    'API_KEY': env('CLOUD_API_KEY', default=''),
+    'API_SECRET': env('CLOUD_API_SECRET', default=''),
 }
 
-# Override default media file storage systems
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-import dj_database_url
-import os
-
+# Database routing engine using dj_database_url
 DATABASES = {
     'default': dj_database_url.config(
-        # Read the same DATABASE_URL environment variable
         default=os.environ.get('DATABASE_URL'),
         conn_max_age=600,
     )
 }
 
-# CRITICAL: Force this project to only use the new schema
+# Force this project to target its own isolated database schema
 DATABASES['default']['OPTIONS'] = {
     'options': '-c search_path=project2_schema'
 }
+
+# Route asset engines dynamically depending on the Environment
+if not DEBUG:
+    # Use Cloudinary for user media uploads
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    
+    # New Django 6+ layout for WhiteNoise static serving
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+else:
+    # Local Development Fallbacks
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
