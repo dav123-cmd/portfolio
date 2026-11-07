@@ -157,3 +157,19 @@ CLOUDINARY_STORAGE = {
 
 # Override default media file storage systems
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+import dj_database_url
+import os
+
+DATABASES = {
+    'default': dj_database_url.config(
+        # Read the same DATABASE_URL environment variable
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+    )
+}
+
+# CRITICAL: Force this project to only use the new schema
+DATABASES['default']['OPTIONS'] = {
+    'options': '-c search_path=project2_schema'
+}

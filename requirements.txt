@@ -4,3 +4,4 @@ django_environ==0.14.0
 environ==1.0
 gunicorn
 psycopg2-binary
+dj_database-url

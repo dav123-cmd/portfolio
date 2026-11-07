@@ -3,3 +3,8 @@ pip install cloudinary-cli
 env('CLOUDINARY_URL')
 cld sync --push media portfolio_media
 
+
+
+ Get-ChildItem -Recurse -Filter wsgi.py | Where-Object { $_.FullName -notmatch "venv" } | Select-Object -ExpandProperty FullName
+ python manage.py migrate
+python manage.py loaddata datadump.json
