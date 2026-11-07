@@ -28,7 +28,18 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = env('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+# settings.py (Near the top, replace the old ALLOWED_HOSTS assignment)
+
+ALLOWED_HOSTS = [
+    'portfolio-8p2m.onrender.com',
+    'localhost',
+    '127.0.0.1',
+]
+
+# (Optional backup lookups if you want to pass more domains later via Render environment variables)
+if os.environ.get('ALLOWED_HOSTS'):
+    ALLOWED_HOSTS.extend(os.environ.get('ALLOWED_HOSTS').split(','))
+
 
 
 # Application definition
